@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- deployment.yaml
+- service.yaml
+
+configMapGenerator:
+  - name: kcervenka-ambulance-webapi-mongodb-init
+    files:
+      - params/init-db.js
+  - name: kcervenka-ambulance-webapi-config
+    literals:
+      - database=kcervenka-ambulance
+      - collection=ambulance
+patches:
+- path: patches/webapi.deployment.yaml
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: kcervenka-ambulance-webapi
